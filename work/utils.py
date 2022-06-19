@@ -1,8 +1,9 @@
-from typing import Union, Tuple
+from typing import Union, Tuple, Any, List
 
 import numpy as np
 from numpy import ndarray
 import pandas as pd
+from pandas import DataFrame
 import matplotlib.pyplot as plt
 from matplotlib.image import AxesImage
 from sklearn.preprocessing import StandardScaler
@@ -113,7 +114,11 @@ def plot_hist(y_true: ndarray, y_like: ndarray, *,
 
 class NamedStandardScaler(TransformerMixin, BaseEstimator):
 
-    def __init__(self, copy=True, with_mean=True, with_std=True, names=None):
+    def __init__(self,
+                 copy: bool = True,
+                 with_mean: bool = True,
+                 with_std: bool = True,
+                 names: List[str] = None):
 
         self.copy = copy
         self.with_mean = with_mean
@@ -126,7 +131,7 @@ class NamedStandardScaler(TransformerMixin, BaseEstimator):
             with_std=self.with_std,
         )
 
-    def fit(self, X, y=None):
+    def fit(self, X: DataFrame, y: Any = None):
 
         if not isinstance(X, pd.DataFrame):
             raise ValueError
@@ -140,7 +145,7 @@ class NamedStandardScaler(TransformerMixin, BaseEstimator):
 
         return self
 
-    def partial_fit(self, X, y=None):
+    def partial_fit(self, X: DataFrame, y: Any = None):
 
         if not isinstance(X, pd.DataFrame):
             raise ValueError
@@ -155,7 +160,7 @@ class NamedStandardScaler(TransformerMixin, BaseEstimator):
 
         return self
 
-    def transform(self, X):
+    def transform(self, X: DataFrame) -> DataFrame:
 
         if not isinstance(X, pd.DataFrame):
             raise ValueError

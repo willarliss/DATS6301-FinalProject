@@ -10,6 +10,7 @@ from sklearn.ensemble import GradientBoostingClassifier, AdaBoostClassifier, Ran
 from utils import NamedStandardScaler
 
 SEED = 0
+RUN = 2
 
 
 def run_gridsearch(X, y, estimators, param_grids):
@@ -27,10 +28,11 @@ def run_gridsearch(X, y, estimators, param_grids):
             param_grid=param_grids[name],
             cv=3,
             refit=False,
-            return_train_score=True,
-            scoring='roc_auc',
+            return_train_score=False,
+            #scoring='roc_auc',
+            scoring='recall',
             n_jobs=7,
-            verbose=1,
+            verbose=2,
         )
 
         search.fit(X, y)
@@ -42,7 +44,7 @@ def run_gridsearch(X, y, estimators, param_grids):
         }
 
         results.append(res)
-        with open('./artifacts/gridsearch.json', 'a') as outfile:
+        with open(f'./artifacts/gridsearch_{RUN}.json', 'a') as outfile:
             outfile.write(json.dumps(res)+'\n')
 
     return results
@@ -122,17 +124,17 @@ if __name__ == '__main__':
     # }
     parameters = {
         'bagged': {
-            'max_depth': [7, 6, 5, 4, 3],
+            'max_depth': [8, 7, 6, 5, 4],
             'class_weight': ['balanced', None],
         },
         'adaboost': {
             'learning_rate': [1.0, 0.1, 0.01, 0.001],
             'base_estimator__class_weight': ['balanced', None],
-            'base_estimator__max_depth': [7, 6, 5, 4, 3],
+            'base_estimator__max_depth': [8, 7, 6, 5, 4],
         },
         'gradboost': {
             'clf__learning_rate': [1.0, 0.1, 0.01, 0.001],
-            'clf__max_depth': [7, 6, 5, 4, 3],
+            'clf__max_depth': [8, 7, 6, 5, 4],
         },
     }
 
@@ -150,4 +152,4 @@ if __name__ == '__main__':
     clf.set_params(**best_result['best_params'])
     clf.fit(X_train, y_train)
 
-    joblib.dump(clf, './artifacts/model_1.joblib')
+    joblib.dump(clf, './artifacts/model_{RUN}.joblib')

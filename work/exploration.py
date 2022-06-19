@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import networkx as nx
 import matplotlib.pyplot as plt
+
+SEED = 0
 
 
 def feature_histogram(data, target, title=None, log=False, figsize=(15,5), return_fig=False):
@@ -30,11 +33,34 @@ def feature_histogram(data, target, title=None, log=False, figsize=(15,5), retur
     return None
 
 
+def plot_graph(G, return_fig=False, figsize=(10,10), title=None):
+
+    pos = nx.kamada_kawai_layout(G)
+    edges_0 = [e[:-1] for e in G.edges(data='label') if e[-1]=='0']
+    edges_1 = [e[:-1] for e in G.edges(data='label') if e[-1]=='1']
+
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=figsize)
+    ax.set_title('Malicious (red) and Benign (blue) Network Flows' if title is None else str(title))
+
+    nx.draw_networkx(G=G, pos=pos, ax=ax, edgelist=edges_1,
+                     width=0.2, alpha=0.5, with_labels=False,
+                     arrows=False, nodelist=[], edge_color='r')
+    nx.draw_networkx(G=G, pos=pos, ax=ax, edgelist=edges_0,
+                     width=0.2, alpha=0.5, with_labels=False,
+                     arrows=False, nodelist=[], edge_color='b')
+    nx.draw_networkx(G=G, pos=pos, ax=ax,
+                     node_size=50, alpha=0.55, with_labels=False,
+                     edgelist=[], linewidths=0., node_color='k')
+
+    if return_fig:
+        return fig
+    return None
+
+
 if __name__ == '__main__':
 
     dtype_map = {'dest_ip': str, 'dest_port': str, 'scr_ip': str, 'src_port': str}
     df = pd.read_csv('../data/train.csv.gz', dtype=dtype_map)
-    #G = nx.read_gml('../data/train_graph.gml.gz')
 
     df['time_end_dt'] = pd.to_datetime(df['time_end']/1e6, unit='s')
     df['time_start_dt'] = pd.to_datetime(df['time_start']/1e6, unit='s')
@@ -60,6 +86,7 @@ if __name__ == '__main__':
     X_train = pd.get_dummies(df[features], columns=['dayofweek', 'proto'])
     y_train = df['label']
     print(X_train.shape)
+    print()
 
     for col in X_train.columns:
         if col.startswith('proto_'):
@@ -82,3 +109,14 @@ if __name__ == '__main__':
     plt.savefig('./artifacts/eda/proto_bar.png')
     plt.close()
 
+    graph = nx.read_gml('../data/train_graph.gml.gz')
+    print(len(graph.nodes), 'nodes', len(graph.edges), 'edges'))
+
+    subsample_size = 1000
+    edges = list(graph.edges)
+    idx = np.random.default_rng(SEED).choice(len(edges), size=subsample_size, replace=False)
+    nodes = np.array([v[:-1] for i,v in enumerate(edges) if i in idx]).flatten()
+    graph_sub = graph.subgraph(set(nodes))
+
+    gplot = plot_graph(graph_sub, return_fig=True)
+    plt.savefig('./artifacts/eda/graph_layout.png')
