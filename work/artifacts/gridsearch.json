@@ -1,1 +1,2 @@
 {"algorithm": "bagged", "best_params": {"class_weight": null, "max_depth": 7}, "best_score": 0.9879207874209625}
+{"algorithm": "adaboost", "best_params": {"base_estimator__class_weight": null, "base_estimator__max_depth": 6, "learning_rate": 0.1}, "best_score": 0.9902617524115973}
