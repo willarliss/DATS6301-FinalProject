@@ -150,4 +150,4 @@ if __name__ == '__main__':
     clf.set_params(**best_result['best_params'])
     clf.fit(X_train, y_train)
 
-    joblib.dump(clf, './artifacts/model.joblib')
+    joblib.dump(clf, './artifacts/model_1.joblib')

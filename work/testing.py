@@ -1,7 +1,10 @@
 import json
 
 import joblib
+import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_auc_score, f1_score, classification_report
 
 from utils import plot_cm, plot_roc, plot_hist
 
@@ -39,5 +42,38 @@ if __name__ == '__main__':
     X_test, y_test = process_inputs(data)
     del data
 
-    clf = joblib.load('./artifacts/model.joblib')
+    clf = joblib.load('./artifacts/model_1.joblib')
 
+    y_proba = clf.predict_proba(X_test)[:,1]
+    try:
+        y_score = clf.decision_function(X_test)
+    except AttributeError:
+        y_score = np.log(y_proba/(1-y_proba))
+    y_pred = clf.predict(X_test)
+
+    fig = plot_hist(y_test, y_score, title='Likelihood Histogram 1', return_fig=True)
+    plt.savefig('./artifacts/likelihood_hist_1.png')
+
+    fig, thresh = plot_roc(y_test, y_proba, title='ROC Curve 1', return_fig=True,  return_t=True)
+    plt.savefig('./artifacts/roc_curve_1.png')
+
+    fig = plot_cm(y_test, y_pred, title='Confusion Matrix 1', return_fig=True)
+    plt.savefig('./artifacts/confusion_matrix_1.png')
+
+    auc = roc_auc_score(y_true=y_test, y_score=y_proba)
+    acc = (y_test==y_pred).mean()
+    f1 = f1_score(y_true=y_test, y_pred=y_pred)
+    print('Accuracy:', acc)
+    print('ROC-AUC:', auc)
+    print('F1:', f1)
+
+    report = classification_report(
+        y_true=y_test,
+        y_pred=y_pred,
+        target_names=('benign_class', 'malicious_class'),
+        output_dict=True,
+    )
+    report['auc'] = auc
+
+    with open('./artifacts/report_1.json', 'w') as outfile:
+        outfile.write(json.dumps(report, indent=2))
