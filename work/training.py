@@ -7,7 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import GradientBoostingClassifier, AdaBoostClassifier, RandomForestClassifier
 
-from utils import NamedStandardScaler
+from utils.objects import NamedStandardScaler
 
 SEED = 0
 RUN = 2
@@ -152,4 +152,4 @@ if __name__ == '__main__':
     clf.set_params(**best_result['best_params'])
     clf.fit(X_train, y_train)
 
-    joblib.dump(clf, './artifacts/model_{RUN}.joblib')
+    joblib.dump(clf, f'./artifacts/model_{RUN}.joblib')

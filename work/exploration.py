@@ -110,13 +110,14 @@ if __name__ == '__main__':
     plt.close()
 
     graph = nx.read_gml('../data/train_graph.gml.gz')
-    print(len(graph.nodes), 'nodes', len(graph.edges), 'edges'))
+    print(len(graph.nodes), 'nodes', len(graph.edges), 'edges')
 
-    subsample_size = 1000
+    subsample_size = 10_000#1000
     edges = list(graph.edges)
     idx = np.random.default_rng(SEED).choice(len(edges), size=subsample_size, replace=False)
     nodes = np.array([v[:-1] for i,v in enumerate(edges) if i in idx]).flatten()
     graph_sub = graph.subgraph(set(nodes))
 
     gplot = plot_graph(graph_sub, return_fig=True)
-    plt.savefig('./artifacts/eda/graph_layout.png')
+    #plt.savefig('./artifacts/eda/graph_layout.png')
+    plt.savefig('./artifacts/eda/graph_layout_large.png')

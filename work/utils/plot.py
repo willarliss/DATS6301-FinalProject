@@ -1,13 +1,9 @@
-from typing import Union, Tuple, Any, List
+from typing import Union, Tuple
 
 import numpy as np
 from numpy import ndarray
-import pandas as pd
-from pandas import DataFrame
 import matplotlib.pyplot as plt
 from matplotlib.image import AxesImage
-from sklearn.preprocessing import StandardScaler
-from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.metrics import confusion_matrix, roc_curve, RocCurveDisplay, roc_auc_score
 
 PlotOutputs = Union[Tuple[AxesImage, ndarray], ndarray, AxesImage]
@@ -110,62 +106,3 @@ def plot_hist(y_true: ndarray, y_like: ndarray, *,
     if return_fig:
         return fig
     return None
-
-
-class NamedStandardScaler(TransformerMixin, BaseEstimator):
-
-    def __init__(self,
-                 copy: bool = True,
-                 with_mean: bool = True,
-                 with_std: bool = True,
-                 names: List[str] = None):
-
-        self.copy = copy
-        self.with_mean = with_mean
-        self.with_std = with_std
-        self.names = names
-
-        self.scaler = StandardScaler(
-            copy=True,
-            with_mean=self.with_mean,
-            with_std=self.with_std,
-        )
-
-    def fit(self, X: DataFrame, y: Any = None):
-
-        if not isinstance(X, pd.DataFrame):
-            raise ValueError
-
-        if self.names is None:
-            self.names_ = X.columns.tolist()
-        else:
-            self.names_ = list(self.names)
-
-        self.scaler.fit(X[self.names_])
-
-        return self
-
-    def partial_fit(self, X: DataFrame, y: Any = None):
-
-        if not isinstance(X, pd.DataFrame):
-            raise ValueError
-
-        if not hasattr(self, 'names_'):
-            if self.names is None:
-                self.names_ = X.columns.tolist()
-            else:
-                self.names_ = list(self.names)
-
-        self.scaler.partial_fit(X[self.names_])
-
-        return self
-
-    def transform(self, X: DataFrame) -> DataFrame:
-
-        if not isinstance(X, pd.DataFrame):
-            raise ValueError
-
-        Xt = X.copy() if self.copy else X
-        Xt[self.names_] = self.scaler.transform(Xt[self.names_])
-
-        return Xt

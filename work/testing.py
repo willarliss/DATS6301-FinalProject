@@ -6,9 +6,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score, f1_score, classification_report, recall_score
 
-from utils import plot_cm, plot_roc, plot_hist
+from utils.plot import plot_cm, plot_roc, plot_hist
 
-RUN = 1
+RUN = 3
 
 
 def process_inputs(df):

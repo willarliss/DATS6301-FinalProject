@@ -1,1 +1,3 @@
 {"algorithm": "bagged", "best_params": {"class_weight": "balanced", "max_depth": 4}, "best_score": 0.9178710880457305}
+{"algorithm": "adaboost", "best_params": {"base_estimator__class_weight": "balanced", "base_estimator__max_depth": 4, "learning_rate": 0.001}, "best_score": 0.9363830455616173}
+{"algorithm": "gradboost", "best_params": {"clf__learning_rate": 1.0, "clf__max_depth": 8}, "best_score": 0.8925228063021531}
