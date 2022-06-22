@@ -15,6 +15,8 @@ def plot_cm(y_true: ndarray, y_pred: ndarray, *,
             title: str = None,
             return_cm: bool = False,
             return_fig: bool = False) -> PlotOutputs:
+    """Plot confusion matrix (color gradient is fixed).
+    """
 
     fig = plt.figure(figsize=figsize)
 
@@ -49,6 +51,8 @@ def plot_roc(y_true: ndarray, y_score: ndarray, *,
              rounding: int = 3,
              return_fig: bool = False,
              return_t: bool = False) -> PlotOutputs:
+    """Plot ROC curve and show thresholds.
+    """
 
     fig, ax = plt.subplots(figsize=figsize)
     fpr, tpr, thresh = roc_curve(y_true=y_true, y_score=y_score)
@@ -83,6 +87,8 @@ def plot_hist(y_true: ndarray, y_like: ndarray, *,
               title: str = None,
               return_fig: bool = False,
               figsize: Tuple[float] = (6.4,4.8)) -> PlotOutputs:
+    """Plot histogram of predicted log-likelihoods.
+    """
 
     y_like = np.clip(
         a=y_like,

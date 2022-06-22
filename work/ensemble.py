@@ -5,6 +5,8 @@ from utils.objects import VotingClassifier2
 RUN = 3
 
 if __name__ == '__main__':
+    """Create soft voting ensemble from pre-trained models.
+    """
 
     models = [
         ('mod_1_roc', joblib.load(filename='./artifacts/model_1.joblib')),

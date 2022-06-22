@@ -1,13 +1,14 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import networkx as nx
 import matplotlib.pyplot as plt
 
 SEED = 0
 
 
 def feature_histogram(data, target, title=None, log=False, figsize=(15,5), return_fig=False):
+    """Plot histogram of full feature and grouped histogram of feature by classes.
+    """
 
     if log:
         data -= data.min()
@@ -33,31 +34,9 @@ def feature_histogram(data, target, title=None, log=False, figsize=(15,5), retur
     return None
 
 
-def plot_graph(G, return_fig=False, figsize=(10,10), title=None):
-
-    pos = nx.kamada_kawai_layout(G)
-    edges_0 = [e[:-1] for e in G.edges(data='label') if e[-1]=='0']
-    edges_1 = [e[:-1] for e in G.edges(data='label') if e[-1]=='1']
-
-    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=figsize)
-    ax.set_title('Malicious (red) and Benign (blue) Network Flows' if title is None else str(title))
-
-    nx.draw_networkx(G=G, pos=pos, ax=ax, edgelist=edges_1,
-                     width=0.2, alpha=0.5, with_labels=False,
-                     arrows=False, nodelist=[], edge_color='r')
-    nx.draw_networkx(G=G, pos=pos, ax=ax, edgelist=edges_0,
-                     width=0.2, alpha=0.5, with_labels=False,
-                     arrows=False, nodelist=[], edge_color='b')
-    nx.draw_networkx(G=G, pos=pos, ax=ax,
-                     node_size=50, alpha=0.55, with_labels=False,
-                     edgelist=[], linewidths=0., node_color='k')
-
-    if return_fig:
-        return fig
-    return None
-
-
 if __name__ == '__main__':
+    """Exploratory data analysis on the panel data (edges of the graph).
+    """
 
     dtype_map = {'dest_ip': str, 'dest_port': str, 'scr_ip': str, 'src_port': str}
     df = pd.read_csv('../data/train.csv.gz', dtype=dtype_map)
@@ -108,16 +87,3 @@ if __name__ == '__main__':
     sns.catplot(data=freq, x='proto', y='Count', hue='label', kind='bar')
     plt.savefig('./artifacts/eda/proto_bar.png')
     plt.close()
-
-    graph = nx.read_gml('../data/train_graph.gml.gz')
-    print(len(graph.nodes), 'nodes', len(graph.edges), 'edges')
-
-    subsample_size = 10_000#1000
-    edges = list(graph.edges)
-    idx = np.random.default_rng(SEED).choice(len(edges), size=subsample_size, replace=False)
-    nodes = np.array([v[:-1] for i,v in enumerate(edges) if i in idx]).flatten()
-    graph_sub = graph.subgraph(set(nodes))
-
-    gplot = plot_graph(graph_sub, return_fig=True)
-    #plt.savefig('./artifacts/eda/graph_layout.png')
-    plt.savefig('./artifacts/eda/graph_layout_large.png')

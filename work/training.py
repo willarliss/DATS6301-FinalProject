@@ -14,6 +14,8 @@ RUN = 2
 
 
 def run_gridsearch(X, y, estimators, param_grids):
+    """Run grid-search over multiple estimators.
+    """
 
     est_names = list(estimators.keys())
     assert set(est_names) == set(param_grids.keys())
@@ -51,6 +53,8 @@ def run_gridsearch(X, y, estimators, param_grids):
 
 
 def process_inputs(df):
+    """Process raw data for input to pipeline.
+    """
 
     features = ['avg_ipt', 'bytes_in', 'bytes_out', 'entropy', 'num_pkts_out', 'num_pkts_in', 'proto',
                 'total_entropy', 'duration', 'duration_computed', 'dayofweek', 'timeofday']
@@ -70,6 +74,8 @@ def process_inputs(df):
 
 
 if __name__ == '__main__':
+    """Train/tune models. Store best model and grid-search results.
+    """
 
     data = pd.read_csv('../data/train.csv.gz')
     X_train, y_train = process_inputs(data)

@@ -12,6 +12,9 @@ RUN = 3
 
 
 def process_inputs(df):
+    """Process raw data for input to pipeline. Copied from `training.py` with one adjustment to
+    validate that the proper columns are present.
+    """
 
     features = ['avg_ipt', 'bytes_in', 'bytes_out', 'entropy', 'num_pkts_out', 'num_pkts_in', 'proto',
                 'total_entropy', 'duration', 'duration_computed', 'dayofweek', 'timeofday']
@@ -39,6 +42,8 @@ def process_inputs(df):
 
 
 if __name__ == '__main__':
+    """Test a model on the holdout set. Plot some metrics.
+    """
 
     data = pd.read_csv('../data/test.csv.gz')
     X_test, y_test = process_inputs(data)

@@ -1,4 +1,5 @@
 import os
+
 import pandas as pd
 import networkx as nx
 
@@ -6,6 +7,8 @@ SEED = 0
 
 
 def extract(dir_path, sample=0.1, seed=None):
+    """Walk the directory, extract csv files, store a sample, apply some basic preprocessing.
+    """
 
     dtype_map = {'dest_ip': str, 'dest_port': str, 'scr_ip': str, 'src_port': str}
     raw_data = []
@@ -27,6 +30,8 @@ def extract(dir_path, sample=0.1, seed=None):
 
 
 def build_graph(df):
+    """Build directed graph from src and dst columns with other features as attributes.
+    """
 
     G = nx.MultiDiGraph()
     features = ['label', 'avg_ipt', 'bytes_in', 'bytes_out', 'entropy', 'num_pkts_out',

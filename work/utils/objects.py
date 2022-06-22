@@ -9,6 +9,8 @@ from sklearn.base import TransformerMixin, BaseEstimator
 
 
 class VotingClassifier2(VotingClassifier):
+    """Additional functionality for VotingClassifier to allow using pre-fit models.
+    """
 
     def __init__(self, estimators: list, *,
                  voting: str = 'soft',
@@ -37,6 +39,8 @@ class VotingClassifier2(VotingClassifier):
 
 
 class NamedStandardScaler(TransformerMixin, BaseEstimator):
+    """Additional functionality for StandardScaler to limit transformation to subset of columns.
+    """
 
     def __init__(self,
                  copy: bool = True,
