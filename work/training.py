@@ -83,12 +83,10 @@ if __name__ == '__main__':
 
     models = {
         'bagged': RandomForestClassifier(
-            random_state=SEED,
             n_estimators=100,
         ),
         'adaboost': AdaBoostClassifier(
             base_estimator=DecisionTreeClassifier(
-                random_state=SEED,
             ),
             n_estimators=100,
             algorithm='SAMME.R'
@@ -98,7 +96,6 @@ if __name__ == '__main__':
                 names=[c for c in X_train.columns if not (c.startswith('proto_') or c.startswith('dayofweek_'))],
             )),
             ('clf', GradientBoostingClassifier(
-                random_state=SEED,
                 n_estimators=100,
                 loss='log_loss',
             )),
@@ -156,6 +153,7 @@ if __name__ == '__main__':
     print('Training:', best_result['algorithm'])
     clf = models[best_result['algorithm']]
     clf.set_params(**best_result['best_params'])
+    clf.set_params(random_state=SEED)
     clf.fit(X_train, y_train)
 
     joblib.dump(clf, f'./artifacts/model_{RUN}.joblib')

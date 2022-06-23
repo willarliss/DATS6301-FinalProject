@@ -87,7 +87,7 @@ def plot_hist(y_true: ndarray, y_like: ndarray, *,
               title: str = None,
               return_fig: bool = False,
               figsize: Tuple[float] = (6.4,4.8)) -> PlotOutputs:
-    """Plot histogram of predicted log-likelihoods.
+    """Plot histogram of predicted scores.
     """
 
     y_like = np.clip(
@@ -99,8 +99,8 @@ def plot_hist(y_true: ndarray, y_like: ndarray, *,
     fig = plt.figure(figsize=figsize)
     plt.hist(y_like[y_true==0], density=True, bins=bins, color='b', alpha=0.5)
     plt.hist(y_like[y_true==1], density=True, bins=bins, color='r', alpha=0.5)
-    plt.title('Likelihood Histogram' if title is None else title)
-    plt.xlabel('Log Likelihood')
+    plt.title('Scoring Histogram' if title is None else title)
+    plt.xlabel('Score')
     plt.ylabel('Density')
 
     if pdf:
