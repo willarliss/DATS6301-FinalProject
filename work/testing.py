@@ -58,8 +58,8 @@ if __name__ == '__main__':
         y_score = np.log(y_proba/(1-y_proba))
     y_pred = clf.predict(X_test)
 
-    fig = plot_hist(y_test, y_score, title=f'Likelihood Histogram {RUN}', return_fig=True)
-    plt.savefig(f'./artifacts/eval/likelihood_hist_{RUN}.png')
+    fig = plot_hist(y_test, y_score, title=f'Scoring Histogram {RUN}', return_fig=True)
+    plt.savefig(f'./artifacts/eval/scoring_hist_{RUN}.png')
 
     fig, thresh = plot_roc(y_test, y_proba, title=f'ROC Curve {RUN}', return_fig=True,  return_t=True)
     plt.savefig(f'./artifacts/eval/roc_curve_{RUN}.png')
